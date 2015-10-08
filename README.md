@@ -102,6 +102,7 @@ bar
   |  Very well done!                                           |
   └────────────────────────────────────────────────────────────┘
 
+myapp~$
 ```
 
 ### API
@@ -139,7 +140,7 @@ Details coming soon...
 ### Examples
 
 - [A basic, silly tour](https://github.com/vorpaljs/vorpal-tour/blob/master/examples/silly-tour.js)
-- [Wat's tour](https://github.com/dthree/wat/blob/master/lib/tour.js)
+- [Wat's tour](https://github.com/dthree/wat/blob/master/src/tour.js)
 
 ### Related
 
