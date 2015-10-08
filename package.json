@@ -1,6 +1,6 @@
 {
   "name": "vorpal-tour",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Tour users through your Vorpal app.",
   "main": "./dist/tour.js",
   "scripts": {
