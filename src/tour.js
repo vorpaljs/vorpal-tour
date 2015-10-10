@@ -167,6 +167,11 @@ Tour.prototype.prepare = function (fn) {
   return this;
 };
 
+Tour.prototype.cleanup = function (fn) {
+  this._cleanup = fn;
+  return this;
+};
+
 Tour.prototype.step = function () {
   const step = new Step(this._steps.length + 1);
   step.tour = this;
@@ -195,12 +200,18 @@ Tour.prototype.next = function () {
 };
 
 Tour.prototype.end = function (msg) {
+  const self = this;
   const step = this.step();
   if (msg) {
     step.begin(msg);
   }
   step.expect('nothing', function (data, cb) {
-    cb(true);
+    self._cleanup = self._cleanup || function (cbk) {
+      cbk();
+    };
+    self._cleanup(function () {
+      cb(true);
+    });
   });
 };
 

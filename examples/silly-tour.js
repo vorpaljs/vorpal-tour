@@ -28,6 +28,12 @@ function defineTour(tour) {
     callback();
   });
 
+  tour.cleanup(function (callback) {
+    // Runs after the tour ends.
+    vorpal.log('(cleaned up tour)');
+    callback();
+  });
+
   tour.step(1)
     .begin('\nWelcome to my amazing app!\n\nTo start, run "foo".\n')
     .expect('command', function (data, cb) {
