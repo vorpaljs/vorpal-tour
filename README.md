@@ -111,31 +111,150 @@ Details coming soon...
 
 #### tour
 
-- `tour.color(chalkColor)`
+##### tour.color(chalkColor)
 
-- `tour.prepare(function)`
+Sets the color of the text that guides the tour. Based on [Chalk](https://github.com/chalk/chalk) colors.
 
-- `tour.step(number) : new Step()`
+```js
+tour.color('magenta');
+tour.step(1).begin('This is now magenta. Almost like unicorns.');
+```
 
-- `tour.wait(millis)`
+```
+  ┌────────────────────────────────────────────────────────────┐
+  |  This is now magenta. Almost like unicorns.                |
+  └────────────────────────────────────────────────────────────┘
+```
 
-- `tour.end(message)`
+##### tour.prepare(function)
+
+Runs a method just before the tour beings, in preparation for the tour. Expects a callback.
+
+```js
+tour.prepare(function (callback) {
+  vorpal.log('preparing...');
+});
+```
+
+##### tour.step(number) : new Step()
+
+Creates a new step in the tour, returning a chainable `Step` instance. See the step section below.
+
+*The step number does nothing for now, outside of giving you sanity. This may change.*
+
+```js
+var step = tour.step(1);
+// ... now do things with the step
+```
+
+##### tour.wait(millis)
+
+Delays a number of millis between multiple steps. The delay begins at the completion of the step.
+
+```js
+tour.step(1); // ...
+
+tour.wait(1000);
+
+tour.step(2); // ...
+```
+
+##### tour.end([message])
+
+Ends the tour, optionally printing a message for the user.
+
+```js
+tour.step(895); // ...
+tour.end('You really made it through all that? Wow. Well done.');
+```
+
+##### tour.cleanup(function)
+
+Runs a method directly after the tour ends, in case you need to run cleanup code. Expects a callback.
+
+```js
+tour.cleanup(function (callback) {
+  mess.cleanup();
+});
+```
 
 #### step
 
-- `step.begin(message)`
+##### step.begin(message)
 
-- `step.expect(event, function)`
+Prints a message for the user at the start of the step.
 
-##### Supported Events
+```js
+tour.step(1).begin('To get started, touch your toes.');
+```
 
-`command`
-`keypress`
-`submit`
+```
+  ┌────────────────────────────────────────────────────────────┐
+  |  To get started, touch your toes.                          |
+  └────────────────────────────────────────────────────────────┘
+```
 
-- `step.wait(millis)`
+##### step.expect(event, function)
 
-- `step.end(message)`
+This is the listener that determines when the step has been completed.
+
+Expects an event emitted from Vorpal. On each instance of the event, the `function` parameter is called, and expects you to return a callback passing `true` or `false`. On `true`, the step is considered to be fullfilled and will proceed to end.
+
+```js
+tour.step(1)
+  .begin('run "foo"')
+  .expect("command", function (data, cb) {
+    cb(data.command === 'foo');
+  });
+```
+
+While standard events are supported, you can emit your own custom events from Vorpal, if needed.
+
+Standard events:
+
+`command`: returns `{command: 'foo'}`
+`keypress`: returns `{ key, value, event }`
+`submit`: returns `{}`
+
+##### step.reject(message)
+
+If a `step.expect` is triggered and `false` is returned (meaning the event was not fulfilled), you can optionally print a reject message that instructs the user that they did the command incorrectly. This will print with a yellow border.
+
+```js
+tour.step(1)
+  .begin('run "foo"')
+  .expect("command", function (data, cb) {
+    cb(data.command === 'foo');
+  })
+  .reject('Okay, let\'s type "foo".');
+```
+
+##### step.wait(millis)
+
+Once a step has been fulfilled, you can optionally wait a given amount of millis before completion.
+
+```js
+tour.step(1)
+  .begin('run "foo"')
+  .expect("command", function (data, cb) {
+    cb(data.command === 'foo');
+  })
+  .wait(1000);
+```
+
+##### step.end(message)
+
+Once a step has been fulfilled and the any `step.wait()` time has passed, you can optionally add a final remark to the user before moving on to the next step, such as a comment on the last one.
+
+```js
+tour.step(1)
+  .begin('run "foo"')
+  .expect("command", function (data, cb) {
+    cb(data.command === 'foo');
+  })
+  .wait(1000)
+  .end('Nice! Isn\'t that just foobar?'');
+```
 
 ### Examples
 
