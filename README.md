@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/vorpaljs/vorpal-tour.svg)](https://travis-ci.org/vorpaljs/vorpal-tour)
 [![XO: Linted](https://img.shields.io/badge/xo-linted-blue.svg)](https://github.com/sindresorhus/xo)
 
-A [Vorpal.js](https://github.com/dthree/vorpal) that let's you build a mature tour that walks users through your interactive CLI with ease.
+A [Vorpal.js](https://github.com/dthree/vorpal) extension for building a mature tour that walks users through your interactive CLI with ease.
 
 ### Installation
 
@@ -30,7 +30,7 @@ vorpal.use(vorpalTour, {
 ```
 ##### Options
 
-- `command`: The name of the Vorpal command that will invoke the tour. Defaults to `tour`. By running `use` mroe than once, you can invoke multiple, separate tours.
+- `command`: The name of the Vorpal command that will invoke the tour. Defaults to `tour`. By running `use` more than once, you can invoke multiple, separate tours.
 
 - `tour`: Expects a function that passes in a `tour` object. You then add steps and details to the tour, and return the `tour` object.
 
@@ -105,9 +105,12 @@ bar
 myapp~$
 ```
 
-### API
+### Examples
 
-Details coming soon...
+- [A basic, silly tour](https://github.com/vorpaljs/vorpal-tour/blob/master/examples/silly-tour.js)
+- [Wat's tour](https://github.com/dthree/wat/blob/master/src/tour.js)
+
+### API
 
 #### tour
 
@@ -133,10 +136,11 @@ Runs a method just before the tour beings, in preparation for the tour. Expects 
 ```js
 tour.prepare(function (callback) {
   vorpal.log('preparing...');
+  callback();
 });
 ```
 
-##### tour.step(number) : new Step()
+##### tour.step(number)
 
 Creates a new step in the tour, returning a chainable `Step` instance. See the step section below.
 
@@ -175,6 +179,7 @@ Runs a method directly after the tour ends, in case you need to run cleanup code
 ```js
 tour.cleanup(function (callback) {
   mess.cleanup();
+  callback();
 });
 ```
 
@@ -213,7 +218,9 @@ While standard events are supported, you can emit your own custom events from Vo
 Standard events:
 
 `command`: returns `{command: 'foo'}`
+
 `keypress`: returns `{ key, value, event }`
+
 `submit`: returns `{}`
 
 ##### step.reject(message)
@@ -253,13 +260,8 @@ tour.step(1)
     cb(data.command === 'foo');
   })
   .wait(1000)
-  .end('Nice! Isn\'t that just foobar?'');
+  .end('Nice! Isn\'t that just foobar?');
 ```
-
-### Examples
-
-- [A basic, silly tour](https://github.com/vorpaljs/vorpal-tour/blob/master/examples/silly-tour.js)
-- [Wat's tour](https://github.com/dthree/wat/blob/master/src/tour.js)
 
 ### Related
 
